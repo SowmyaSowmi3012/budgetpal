@@ -15,7 +15,9 @@ app.use("/api/expenses", expenseRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/uploads", express.static("uploads"));
-
+app.get("/", (req, res) => {
+  res.send("🎉 BudgetPal Backend is running!");
+});
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
