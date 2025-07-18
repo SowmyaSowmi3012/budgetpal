@@ -16,4 +16,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("User", userSchema);
+// ✅ Correct ES module export
+const User = mongoose.model("User", userSchema);
+export default User;

@@ -28,17 +28,16 @@ const handleSubmit = async (e) => {
     date: new Date().toISOString(),
   };
 
-  try {
-    await addExpense(newExpense);
-    toast.success("Expense added!");
-
-    // Reset form
-    setTitle("");
-    setAmount("");
-    setCategory("Food");
-  } catch (err) {
-    toast.error("Failed to add expense");
-  }
+try {
+  await addExpense(newExpense);
+  toast.success("Expense added!");
+  await fetchExpenses(); // Fetch updated list
+  setTitle("");
+  setAmount("");
+  setCategory("Food");
+} catch (err) {
+  toast.error("Failed to add expense");
+}
 };
   return (
     <>

@@ -2,7 +2,6 @@ import express from "express";
 import { registerUser, loginUser } from "../controllers/userController.js";
 import { updateProfile } from "../controllers/userController.js";
 import { authMiddleware } from "../middleware/auth.js";
-import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.post("/register", registerUser);

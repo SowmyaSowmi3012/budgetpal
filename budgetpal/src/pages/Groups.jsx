@@ -102,9 +102,12 @@ const Groups = () => {
     navigate(`/groups/${id}`);
   };
 
-  useEffect(() => {
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
     fetchGroups();
-  }, []);
+  }
+}, []);
 
   return (
     <>

@@ -2,6 +2,12 @@ import Expense from "../models/Expense.js";
 
 // 🔍 Get expenses for logged-in user
 export const getExpenses = async (req, res) => {
+  console.log("req.userId from authMiddleware:", req.userId); // 👈 Debug
+
+  if (!req.userId) {
+    return res.status(401).json({ error: "Unauthorized - No user ID" });
+  }
+
   try {
     const expenses = await Expense.find({ user: req.userId }).sort({ date: -1 });
     res.json(expenses);
