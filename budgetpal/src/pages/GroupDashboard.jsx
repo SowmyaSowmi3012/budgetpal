@@ -102,7 +102,14 @@ const handleAddExpense = async (e) => {
           </li>
         ))}
       </ul>
-
+      <h3 className="mt-6 font-semibold">📄 All Expenses</h3>
+<ul className="list-disc pl-5 mb-6">
+  {group.expenses?.map((exp) => (
+    <li key={exp._id}>
+      {exp.description} - ₹{exp.amount} (Paid by: {exp.paidBy?.email || "Unknown"})
+    </li>
+  ))}
+</ul>
       <div className="max-w-md mx-auto bg-white p-4 rounded shadow mb-6">
         <h3 className="text-lg font-semibold mb-2 text-center">💰 Expense Distribution</h3>
         <Pie data={pieData} />

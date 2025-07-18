@@ -127,19 +127,44 @@ export const getGroupSummary = async (req, res) => {
 
 export const getGroupById = async (req, res) => {
   try {
-    const group = await Group.findById(req.params.id).populate("members", "email totalSpent");
+    const group = await Group.findById(req.params.id).populate("members", "email");
 
-    // Check if the user is a member of the group
-    const isMember = group.members.some((member) =>
-      member._id.toString() === req.userId
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    const isMember = group.members.some(
+      (member) => member._id.toString() === req.userId
     );
 
     if (!isMember) {
       return res.status(403).json({ message: "Access denied: not a group member" });
     }
 
-    res.status(200).json(group);
+    // 👇 Fetch all expenses for this group
+    const expenses = await GroupExpense.find({ groupId: group._id }).populate("paidBy", "email");
+
+    // 👇 Calculate total spent per member
+    const memberSpending = {};
+    expenses.forEach((expense) => {
+      const uid = expense.paidBy._id.toString();
+      if (!memberSpending[uid]) memberSpending[uid] = 0;
+      memberSpending[uid] += expense.amount;
+    });
+
+    // 👇 Append totalSpent to each member
+    const updatedMembers = group.members.map((member) => ({
+      _id: member._id,
+      email: member.email,
+      totalSpent: memberSpending[member._id.toString()] || 0,
+    }));
+
+    res.status(200).json({
+      _id: group._id,
+      name: group.name,
+      members: updatedMembers,
+      expenses, // ✅ so you can show list of expenses too
+    });
   } catch (err) {
+    console.error("Error in getGroupById:", err);
     res.status(500).json({ message: "Group not found" });
   }
 };
